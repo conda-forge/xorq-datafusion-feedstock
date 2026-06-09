@@ -2,7 +2,7 @@
 schema_version: 1
 
 context:
-  version: "0.2.8"
+  version: "0.2.9"
 
 package:
   name: xorq-datafusion
@@ -10,10 +10,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/x/xorq-datafusion/xorq_datafusion-${{ version }}.tar.gz
-  sha256: 531ad0c0fb2fc8e547a11d6716d6739b8df352edec0dfa9e409f703cbae36693
+  sha256: 77e47ef4614544eb6ffc75629b2940da0a446ddf7afece7354b9a40232e35304
 
 build:
-  number: 1
+  number: 0
   script:
     env:
       CARGO_PROFILE_RELEASE_STRIP: symbols
