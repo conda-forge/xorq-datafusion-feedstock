@@ -29,7 +29,16 @@ build:
       # so the historical "time out issues" comment no longer applies — see
       # conda-forge-expert v8.25.0 ci-troubleshooting.md "Fat-LTO on Windows".
       CARGO_PROFILE_RELEASE_STRIP: symbols
-      CARGO_PROFILE_RELEASE_LTO: fat
+      # Fat LTO only on platforms where the rustc bitcode merge is
+      # empirically stable for this dep graph (datafusion v53 + arrow v58 +
+      # aws-sdk + tokio + heed + ring + ~600 transitive crates):
+      #   linux-64 (12m wall), osx-arm64, win-64 — green in PR #4 first run.
+      # Skipped on:
+      #   linux-aarch64 — qemu-emulated; rustc OOM-killed during bitcode merge.
+      #   osx-64 — rustc ICE (SIGSEGV) on the macOS 13.4 SDK + current LLVM
+      #            combo during fat-LTO bitcode merge.
+      # Cargo.toml's `[profile.release] lto = "thin"` is the fallback default.
+      CARGO_PROFILE_RELEASE_LTO: ${{ "fat" if target_platform in ["linux-64", "osx-arm64", "win-64"] else "thin" }}
       PYTHONUTF8: "1"
     content:
       # Multi-line `then: |` so env exports persist into pip install
